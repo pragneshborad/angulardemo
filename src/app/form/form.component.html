@@ -1,0 +1,58 @@
+<div class="form_container">
+    <div class="width">
+        <div class="form_border">
+            <div class="title_form">
+                <p>Inquiry Form++</p>
+                <form method="post" (ngSubmit)="inquiryForm.form.valid && SubmitinquiryForm()" #inquiryForm="ngForm"
+                    novalidate>
+                    <div class="padding_label">
+                        <label class="text_color" for="name">Name:</label>
+                        <input placeholder="Enter your name" type="text" id="name" name="name"
+                            [(ngModel)]="inquiry_obj.name" #name="ngModel" autocomplete="off" maxlength="50"
+                            required="required" appOnlyAlpha class="border_input"
+                            [ngClass]="{ 'is-invalid': inquiryForm.submitted && name.invalid }">
+                    </div>
+                    <div class="padding_label">
+                        <label class="text_color" for="email">Email Address:</label>
+                        <input placeholder="Enter your email" type="email" id="email_address" name="email_address"
+                            [(ngModel)]="inquiry_obj.email_address" #email_address="ngModel" autocomplete="off"
+                            [pattern]="emailPattern" maxlength="250" required="required"
+                            [ngClass]="{ 'is-invalid': inquiryForm.submitted && email_address.invalid  }"
+                            class="border_input">
+                    </div>
+                    <div class="padding_label">
+                        <label class="text_color" for="contact">Mobile No:</label>
+                        <input placeholder="Enter your contact no." type="tel" id="contact_no" name="contact_no"
+                            [(ngModel)]="inquiry_obj.contact_no" #contact_no="ngModel" autocomplete="off" minlength="8"
+                            maxlength="15" onlyNumber required="required" class="border_input"
+                            [ngClass]="{ 'is-invalid': inquiryForm.submitted && contact_no.invalid  }">
+                    </div>
+                    <div class="padding_label">
+                        <label class="text_color" for="subject">Subject:</label>
+                        <input type="text" placeholder="Enter your subject" id="subject" name="subject"
+                            [(ngModel)]="inquiry_obj.subject" #subject="ngModel" autocomplete="off"
+                            [ngClass]="{ 'is-invalid': inquiryForm.submitted && subject.invalid }" required="required"
+                            class="border_input">
+                    </div>
+
+                    <div class="padding_label">
+                        <label class="text_color" for="comments">Comments:</label>
+                        <textarea placeholder="Enter your message..." type="text" rows="5" id="comments" name="comments"
+                            autocomplete="off" [(ngModel)]="inquiry_obj.comments" #comments="ngModel"
+                            class="border_input">
+                        </textarea>
+                    </div>
+
+                    <div class="padding_label">
+                        <label class="text_color" for="resume">Resume:</label>
+                        <input class="border_input" type="file" name="resume" id="resume" accept="pdf" required>
+                    </div>
+
+                    <div class="padding_label">
+                        <button class="buttom_border" type="submit" id="sendone"> {{ button_text }} </button><br><br>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
