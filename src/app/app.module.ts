@@ -5,7 +5,9 @@ import { AppComponent } from './app.component';
 import { FormComponent } from './form/form.component';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
-
+import { ToastrModule } from 'ngx-toastr';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ReactiveFormsModule } from '@angular/forms';
 @NgModule({
   declarations: [
     AppComponent,
@@ -13,10 +15,15 @@ import { HttpClientModule } from '@angular/common/http';
    
   ],
   imports: [
+    BrowserAnimationsModule,
     BrowserModule,
     AppRoutingModule,
     FormsModule,
-    HttpClientModule
+    ReactiveFormsModule,
+    HttpClientModule,
+     ToastrModule.forRoot({
+      positionClass: 'toast-bottom-right',
+  })
     
   ],
   providers: [],

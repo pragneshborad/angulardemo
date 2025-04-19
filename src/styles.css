@@ -57,3 +57,39 @@
     letter-spacing: 0.8px;
     line-height: 1.2;
 }
+.refresh_icon {
+    width: 24px;
+}
+
+.imput_div {
+    /* width: 17%; */
+    width: 90px;
+}
+
+.input_width {
+    background-color: transparent !important;
+    border: 1px solid var(--color_light_gray) !important;
+    border-radius: 8px !important;
+    width: 100%;
+    padding: 5px 10px;
+    outline: none !important;
+}
+
+.msg_top {
+    margin-top: 10px;
+}
+
+.reset_gap {
+    gap: 10px;
+    padding-bottom: 18px;
+}
+
+.correct_icon {
+    width: 20px;
+}
+
+.validate_gap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}

@@ -86,8 +86,8 @@ defined('EXIT__AUTO_MAX')      OR define('EXIT__AUTO_MAX', 125); // highest auto
 
 defined('SYSTEM_NAME')      OR define('SYSTEM_NAME', 'angulardemo');
 defined('SYSTEM_EMAIL')      OR define('SYSTEM_EMAIL', '');
-// defined('LOGO_URL')      OR define('LOGO_URL', 'http://192.168.1.29/circuit-node-technology/api/assets/logo_main.png');
-defined('LOGO_URL')      OR define('LOGO_URL', 'https://demo1.saptez.com/circuit-node/assets/images/header/logo_main.png');
+defined('LOGO_URL')      OR define('LOGO_URL', 'http://192.168.1.2/angulardemo/api/assets/logo_main.png');
+// defined('LOGO_URL')      OR define('LOGO_URL', 'https://demo1.saptez.com/circuit-node/assets/images/header/logo_main.png');
 defined('BASE_URL')      OR define('BASE_URL', 'http://192.168.1.2:4400/angulardemo/');
 defined('BASE_PATH')      OR define('BASE_PATH', 'http://192.168.1.2/angulardemo/api/assets/');
 defined('UPLOAD_URL')      OR define('UPLOAD_URL', substr(FCPATH, 0, -4).'api/assets/');

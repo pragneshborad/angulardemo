@@ -1,7 +1,7 @@
 import { MasterServicesService } from './../services/master-services.service';
 import { Component, ViewChild } from '@angular/core';
-import { NgForm } from '@angular/forms';
-
+import { NgForm, FormGroup, FormBuilder,Validators} from '@angular/forms';
+import { ToastService } from 'src/app/services/toast.service';
 @Component({
     selector: 'app-form',
     templateUrl: './form.component.html',
@@ -9,7 +9,66 @@ import { NgForm } from '@angular/forms';
 })
 export class FormComponent {
 
-    constructor(private MasterServices: MasterServicesService) { }
+    captchaForm: FormGroup;
+    randomNum1: any;
+    randomNum2: any;
+    total: any;
+    successMessage: string = '';
+    failMessage: string = '';
+
+
+    constructor(
+        private MasterServices: MasterServicesService,
+        private ToastService: ToastService,
+        private formBuilder: FormBuilder,
+    ) {
+        this.captchaForm = this.formBuilder.group({
+            answer: ['', Validators.required]
+        });
+    }
+      
+
+    ngOnInit(): void {
+      
+        this.generateCaptcha();
+
+        this.captchaForm.get('answer')?.valueChanges.subscribe(value => {
+            const inputValue = parseInt(value, 10); // Ensure it's a number
+            if (inputValue === this.total) {
+                this.successMessage = 'Correct ';
+                this.failMessage = ''; // Clear fail message on success
+            } else if (value !== '') {
+                this.failMessage = 'Incorrect '; // Show fail message on incorrect input
+                this.successMessage = ''; // Clear success message on failure
+            } else {
+                this.failMessage = '';
+                this.successMessage = '';
+            }
+        });
+    }
+
+    generateCaptcha() {
+        const maxNum = 10;
+        this.randomNum1 = Math.ceil(Math.random() * maxNum);
+        this.randomNum2 = Math.ceil(Math.random() * maxNum);
+        this.total = this.randomNum1 + this.randomNum2;
+        this.successMessage = '';
+        this.failMessage = '';
+        this.captchaForm.reset();
+    }
+
+    resetCaptcha() {
+        this.generateCaptcha();
+        this.successMessage = '';
+        this.failMessage = '';
+    }
+    
+    onFileChange(event: any) {
+        if (event.target.files && event.target.files[0]) {
+          const file = event.target.files[0];
+          this.inquiry_obj.resume = file;  // Save the file to the inquiry object
+        }
+      }
 
     @ViewChild('inquiryForm', { static: false })
     form!: NgForm;
@@ -26,6 +85,10 @@ export class FormComponent {
     SubmitinquiryForm() {
         if (!this.isloginSubmitted) {
 
+            if (!this.isCaptchaSolved()) {
+                this.ToastService.error('Please solve the CAPTCHA.');
+                return;
+            }
 
             this.isloginSubmitted = true;
             this.button_text = "Please Wait...";
@@ -37,10 +100,12 @@ export class FormComponent {
                 var response = JSON.parse(JSON.stringify(res));
                 if (response.success) {
                     this.form.resetForm();
+                    this.resetCaptcha();
                     this.inquiry_obj = {};
-                    // this.ToastService.success(response.message);
+                    this.inquiry_obj.inquiry_type = "1";
+                    this.ToastService.success(response.message);
                 } else {
-                    // this.ToastService.error(response.message);
+                    this.ToastService.error(response.message);
                 }
 
                 this.isloginSubmitted = false;
@@ -49,41 +114,49 @@ export class FormComponent {
                 // this.form.resetForm();
                 this.isloginSubmitted = false;
                 this.button_text = "Submit";
-                // this.ToastService.error('Opps...something went wrong, Plesae try again.');
+                this.ToastService.error('Opps...something went wrong, Plesae try again.');
             })
         }
     }
 
+    isCaptchaSolved(): boolean {
+        const answer = this.captchaForm.get('answer')?.value;
+        return parseInt(answer, 10) === this.total;
+    }
 
-
+    
 
 
     check_form(form: any) {
-        console.log(form, "form");
+        // console.log(form, "form");
         if (form.status == 'INVALID') {
 
             if (this.inquiry_obj.name == undefined || this.inquiry_obj.name == '') {
-                this.inquiry_obj.error('The Name Field is required.');
+                this.ToastService.error('The Name Field is required.');
             }
 
             else if (this.inquiry_obj.email_address == undefined || this.inquiry_obj.email_address == '') {
-                this.inquiry_obj.error('The Email Field is required.');
+                this.ToastService.error('The Email Field is required.');
             }
             else if (!this.emailPattern.test(this.inquiry_obj.email_address)) {
-                this.inquiry_obj.error('Please Enter a Valid Email address.');
+                this.ToastService.error('Please Enter a Valid Email address.');
             }
 
             else if (this.inquiry_obj.contact_no == undefined || this.inquiry_obj.contact_no == '') {
-                this.inquiry_obj.error('The Contact Field is required.');
+                this.ToastService.error('The Contact Field is required.');
             }
             else if (this.inquiry_obj.contact_no.length < 8) {
-                this.inquiry_obj.error('Please Enter a Valid Contact number.');
+                this.ToastService.error('Please Enter a Valid Contact number.');
             }
 
             else if (this.inquiry_obj.subject == undefined || this.inquiry_obj.subject == '') {
-                this.inquiry_obj.error('The Subject Field is required.');
+                this.ToastService.error('The Subject Field is required.');
             }
 
+            else if (!this.isCaptchaSolved()) {
+                this.ToastService.error('Please solve the CAPTCHA.');
+                return;
+            }
 
         }
     }

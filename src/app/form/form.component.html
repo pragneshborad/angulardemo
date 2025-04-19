@@ -2,54 +2,97 @@
     <div class="width">
         <div class="form_border">
             <div class="title_form">
-                <p>Inquiry Form++</p>
+                <p>Inquiry Form</p>
+
                 <form method="post" (ngSubmit)="inquiryForm.form.valid && SubmitinquiryForm()" #inquiryForm="ngForm"
                     novalidate>
+                    <!-- Name -->
                     <div class="padding_label">
                         <label class="text_color" for="name">Name:</label>
                         <input placeholder="Enter your name" type="text" id="name" name="name"
-                            [(ngModel)]="inquiry_obj.name" #name="ngModel" autocomplete="off" maxlength="50"
-                            required="required" appOnlyAlpha class="border_input"
-                            [ngClass]="{ 'is-invalid': inquiryForm.submitted && name.invalid }">
+                            [(ngModel)]="inquiry_obj.name" #name="ngModel" autocomplete="off" maxlength="50" required
+                            appOnlyAlpha class="border_input"
+                            [ngClass]="{ 'is-invalid': inquiryForm.submitted && name.invalid }" />
                     </div>
+
+                    <!-- Email -->
                     <div class="padding_label">
                         <label class="text_color" for="email">Email Address:</label>
                         <input placeholder="Enter your email" type="email" id="email_address" name="email_address"
                             [(ngModel)]="inquiry_obj.email_address" #email_address="ngModel" autocomplete="off"
-                            [pattern]="emailPattern" maxlength="250" required="required"
-                            [ngClass]="{ 'is-invalid': inquiryForm.submitted && email_address.invalid  }"
-                            class="border_input">
+                            [pattern]="emailPattern" maxlength="250" required
+                            [ngClass]="{ 'is-invalid': inquiryForm.submitted && email_address.invalid }"
+                            class="border_input" />
                     </div>
+
+                    <!-- Mobile -->
                     <div class="padding_label">
                         <label class="text_color" for="contact">Mobile No:</label>
                         <input placeholder="Enter your contact no." type="tel" id="contact_no" name="contact_no"
                             [(ngModel)]="inquiry_obj.contact_no" #contact_no="ngModel" autocomplete="off" minlength="8"
-                            maxlength="15" onlyNumber required="required" class="border_input"
-                            [ngClass]="{ 'is-invalid': inquiryForm.submitted && contact_no.invalid  }">
+                            maxlength="15" onlyNumber required class="border_input"
+                            [ngClass]="{ 'is-invalid': inquiryForm.submitted && contact_no.invalid }" />
                     </div>
+
+                    <!-- Subject -->
                     <div class="padding_label">
                         <label class="text_color" for="subject">Subject:</label>
                         <input type="text" placeholder="Enter your subject" id="subject" name="subject"
-                            [(ngModel)]="inquiry_obj.subject" #subject="ngModel" autocomplete="off"
-                            [ngClass]="{ 'is-invalid': inquiryForm.submitted && subject.invalid }" required="required"
-                            class="border_input">
+                            [(ngModel)]="inquiry_obj.subject" #subject="ngModel" autocomplete="off" required
+                            class="border_input"
+                            [ngClass]="{ 'is-invalid': inquiryForm.submitted && subject.invalid }" />
                     </div>
 
+                    <!-- Comments -->
                     <div class="padding_label">
                         <label class="text_color" for="comments">Comments:</label>
-                        <textarea placeholder="Enter your message..." type="text" rows="5" id="comments" name="comments"
+                        <textarea placeholder="Enter your message..." rows="5" id="comments" name="comments"
                             autocomplete="off" [(ngModel)]="inquiry_obj.comments" #comments="ngModel"
-                            class="border_input">
-                        </textarea>
+                            class="border_input"></textarea>
                     </div>
 
+                    <!-- Resume -->
                     <div class="padding_label">
                         <label class="text_color" for="resume">Resume:</label>
-                        <input class="border_input" type="file" name="resume" id="resume" accept="pdf" required>
+                        <input class="border_input" type="file" name="resume" id="resume" accept="application/pdf"
+                               required [(ngModel)]="inquiry_obj.resume" #resume="ngModel" class="border_input" (change)="onFileChange($event)" />
+                      </div>
+                      
+
+                    <!-- CAPTCHA -->
+                    <div [formGroup]="captchaForm" class="padding_label">
+                        <label class="text_color">
+                            captcha {{ randomNum1 }} + {{ randomNum2 }} =
+                        </label>
+                        <input class="border_input" type="number" formControlName="answer" required
+                            placeholder="Enter the answer" />
+                        <button type="button" class="refresh-button" (click)="resetCaptcha()">Refresh</button>
+
+                        <!-- CAPTCHA messages -->
+                        <div class="transition_0_2">
+                            <div class="validate_gap" *ngIf="successMessage" id="success">
+                                <p class="color_green_parrot">{{ successMessage }}</p>
+                                <div class="correct_icon">
+                                    <img alt="Correct" src="assets/images/footer/correct.svg" class="img-responsive" />
+                                </div>
+                            </div>
+                            <div class="validate_gap" *ngIf="failMessage" id="fail">
+                                <p class="color_red">{{ failMessage }}</p>
+                                <div class="correct_icon">
+                                    <img alt="Incorrect" src="assets/images/footer/incorrect.svg"
+                                        class="img-responsive" />
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
+                    <!-- Submit -->
                     <div class="padding_label">
-                        <button class="buttom_border" type="submit" id="sendone"> {{ button_text }} </button><br><br>
+                        <button class="buttom_border" type="submit" id="sendone" [disabled]="!isCaptchaSolved()"
+                            (click)="check_form(inquiryForm.form)">
+                            {{ button_text }}
+                        </button>
+                        <br /><br />
                     </div>
                 </form>
             </div>
