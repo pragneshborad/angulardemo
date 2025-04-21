@@ -5,8 +5,8 @@
                 <p>Inquiry Form</p>
 
                 <form method="post" (ngSubmit)="inquiryForm.form.valid && SubmitinquiryForm()" #inquiryForm="ngForm"
-                    novalidate>
-                    <!-- Name -->
+                    novalidate enctype="multipart/form-data">
+                  
                     <div class="padding_label">
                         <label class="text_color" for="name">Name:</label>
                         <input placeholder="Enter your name" type="text" id="name" name="name"
@@ -15,7 +15,7 @@
                             [ngClass]="{ 'is-invalid': inquiryForm.submitted && name.invalid }" />
                     </div>
 
-                    <!-- Email -->
+              
                     <div class="padding_label">
                         <label class="text_color" for="email">Email Address:</label>
                         <input placeholder="Enter your email" type="email" id="email_address" name="email_address"
@@ -25,7 +25,7 @@
                             class="border_input" />
                     </div>
 
-                    <!-- Mobile -->
+          
                     <div class="padding_label">
                         <label class="text_color" for="contact">Mobile No:</label>
                         <input placeholder="Enter your contact no." type="tel" id="contact_no" name="contact_no"
@@ -34,7 +34,7 @@
                             [ngClass]="{ 'is-invalid': inquiryForm.submitted && contact_no.invalid }" />
                     </div>
 
-                    <!-- Subject -->
+                
                     <div class="padding_label">
                         <label class="text_color" for="subject">Subject:</label>
                         <input type="text" placeholder="Enter your subject" id="subject" name="subject"
@@ -43,7 +43,7 @@
                             [ngClass]="{ 'is-invalid': inquiryForm.submitted && subject.invalid }" />
                     </div>
 
-                    <!-- Comments -->
+               
                     <div class="padding_label">
                         <label class="text_color" for="comments">Comments:</label>
                         <textarea placeholder="Enter your message..." rows="5" id="comments" name="comments"
@@ -51,15 +51,26 @@
                             class="border_input"></textarea>
                     </div>
 
-                    <!-- Resume -->
-                    <div class="padding_label">
-                        <label class="text_color" for="resume">Resume:</label>
-                        <input class="border_input" type="file" name="resume" id="resume" accept="application/pdf"
-                               required [(ngModel)]="inquiry_obj.resume" #resume="ngModel" class="border_input" (change)="onFileChange($event)" />
+                   
+                      <div class="padding_label">
+                        <label class="text_color" for="attachment">Attachment:</label>
+                        <input class="border_input" type="file" name="attachment" id="attachment" accept="application/pdf"
+                               required [(ngModel)]="inquiry_obj.attachment" #attachment="ngModel" class="border_input" (change)="onFileChange($event)" />
+                      </div>
+                      <div class="padding_label">
+                        <label class="text_color" for="category">Category:</label>
+                        <select id="category" name="category"
+                                class="border_input font_16 font_gt_walsheim_light font_40_mo"
+                                [(ngModel)]="inquiry_obj.category" #category="ngModel" required
+                                [ngClass]="{ 'is-invalid': inquiryForm.submitted && category.invalid }">
+                          <option>-- Choose a Category --</option>
+                          <option value="Retailer">Retailer</option>
+                          <option value="Wholesaler">Wholesaler</option>
+                          <option value="Distributor">Distributor</option>
+                        </select>
                       </div>
                       
-
-                    <!-- CAPTCHA -->
+                 
                     <div [formGroup]="captchaForm" class="padding_label">
                         <label class="text_color">
                             captcha {{ randomNum1 }} + {{ randomNum2 }} =
@@ -68,28 +79,25 @@
                             placeholder="Enter the answer" />
                         <button type="button" class="refresh-button" (click)="resetCaptcha()">Refresh</button>
 
-                        <!-- CAPTCHA messages -->
+                    
                         <div class="transition_0_2">
                             <div class="validate_gap" *ngIf="successMessage" id="success">
                                 <p class="color_green_parrot">{{ successMessage }}</p>
                                 <div class="correct_icon">
-                                    <img alt="Correct" src="assets/images/footer/correct.svg" class="img-responsive" />
+                                 
                                 </div>
                             </div>
                             <div class="validate_gap" *ngIf="failMessage" id="fail">
                                 <p class="color_red">{{ failMessage }}</p>
                                 <div class="correct_icon">
-                                    <img alt="Incorrect" src="assets/images/footer/incorrect.svg"
-                                        class="img-responsive" />
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Submit -->
+                   
                     <div class="padding_label">
-                        <button class="buttom_border" type="submit" id="sendone" [disabled]="!isCaptchaSolved()"
-                            (click)="check_form(inquiryForm.form)">
+                        <button class="buttom_border" type="submit" id="sendone" [disabled]="!isCaptchaSolved()">
                             {{ button_text }}
                         </button>
                         <br /><br />

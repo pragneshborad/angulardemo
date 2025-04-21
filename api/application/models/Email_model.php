@@ -71,7 +71,7 @@ class email_model extends CI_Model {
 
 	    if ($attachments){
 			$attachments = array_unique($attachments);
-		}c
+		}
 	    $config['protocol'] = "smtp";
 	    $config['smtp_host'] = "ssl://smtp.gmail.com";
 	    $config['smtp_port'] = 465;

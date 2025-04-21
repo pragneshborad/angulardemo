@@ -66,7 +66,8 @@ export class FormComponent {
     onFileChange(event: any) {
         if (event.target.files && event.target.files[0]) {
           const file = event.target.files[0];
-          this.inquiry_obj.resume = file;  // Save the file to the inquiry object
+          this.inquiry_obj.attachment = file;  
+          
         }
       }
 
@@ -102,7 +103,7 @@ export class FormComponent {
                     this.form.resetForm();
                     this.resetCaptcha();
                     this.inquiry_obj = {};
-                    this.inquiry_obj.inquiry_type = "1";
+                    // this.inquiry_obj.inquiry_type = "1";
                     this.ToastService.success(response.message);
                 } else {
                     this.ToastService.error(response.message);
@@ -161,4 +162,3 @@ export class FormComponent {
         }
     }
 }
-
