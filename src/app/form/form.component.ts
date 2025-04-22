@@ -1,6 +1,6 @@
 import { MasterServicesService } from './../services/master-services.service';
 import { Component, ViewChild } from '@angular/core';
-import { NgForm, FormGroup, FormBuilder,Validators} from '@angular/forms';
+import { NgForm, FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ToastService } from 'src/app/services/toast.service';
 @Component({
     selector: 'app-form',
@@ -16,6 +16,8 @@ export class FormComponent {
     successMessage: string = '';
     failMessage: string = '';
 
+    categories: any[] = [];
+    // selectedCategory: string = '';
 
     constructor(
         private MasterServices: MasterServicesService,
@@ -26,27 +28,26 @@ export class FormComponent {
             answer: ['', Validators.required]
         });
     }
-      
 
     ngOnInit(): void {
-      
+
         this.generateCaptcha();
+        this.loadData();
 
         this.captchaForm.get('answer')?.valueChanges.subscribe(value => {
-            const inputValue = parseInt(value, 10); // Ensure it's a number
+            const inputValue = parseInt(value, 10);
             if (inputValue === this.total) {
                 this.successMessage = 'Correct ';
-                this.failMessage = ''; // Clear fail message on success
+                this.failMessage = '';
             } else if (value !== '') {
-                this.failMessage = 'Incorrect '; // Show fail message on incorrect input
-                this.successMessage = ''; // Clear success message on failure
+                this.failMessage = 'Incorrect ';
+                this.successMessage = '';
             } else {
                 this.failMessage = '';
                 this.successMessage = '';
             }
         });
     }
-
     generateCaptcha() {
         const maxNum = 10;
         this.randomNum1 = Math.ceil(Math.random() * maxNum);
@@ -62,14 +63,24 @@ export class FormComponent {
         this.successMessage = '';
         this.failMessage = '';
     }
-    
+
+    loadData() {
+        this.MasterServices.loadCategory().subscribe((res: any) => {
+            if (res.success && res.data) {
+                this.categories = res.data;
+            } else {
+                this.ToastService.error("Failed to load categories.");
+            }
+        });
+    }
+
     onFileChange(event: any) {
         if (event.target.files && event.target.files[0]) {
-          const file = event.target.files[0];
-          this.inquiry_obj.attachment = file;  
-          
+            const file = event.target.files[0];
+            this.inquiry_obj.attachment = file;
+
         }
-      }
+    }
 
     @ViewChild('inquiryForm', { static: false })
     form!: NgForm;
@@ -79,6 +90,7 @@ export class FormComponent {
     public inquiry_obj: any = {
 
     };
+  
 
 
     public isloginSubmitted: boolean = false;
@@ -125,9 +137,6 @@ export class FormComponent {
         return parseInt(answer, 10) === this.total;
     }
 
-    
-
-
     check_form(form: any) {
         // console.log(form, "form");
         if (form.status == 'INVALID') {
@@ -152,6 +161,10 @@ export class FormComponent {
 
             else if (this.inquiry_obj.subject == undefined || this.inquiry_obj.subject == '') {
                 this.ToastService.error('The Subject Field is required.');
+            }
+
+            else if (this.inquiry_obj.category_id == undefined || this.inquiry_obj.category_id == '') {
+                this.ToastService.error('Please select  one category.');
             }
 
             else if (!this.isCaptchaSolved()) {

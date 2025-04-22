@@ -29,5 +29,18 @@ export class MasterServicesService {
         return this.http.post(url, formData, { headers: httpHeaders });
     }
 
+   
+    loadCategory(id: string = ''): Observable<any> {
+        const url = environment.api_url + 'inquiry/inquiry/list';
+        let httpHeaders = new HttpHeaders({
+           
+            'Authorization': 'User PBT24RIFM16VGTHRT6PSRTBQIN4AGT78Y456455GR3FU8778FGH8TYDU4648534FV75',
+        });
+        const postData = id ? { id: id } : {};
+        return this.http.post(url, postData,  { headers: httpHeaders });
+      }
+
+    
+
 
 }

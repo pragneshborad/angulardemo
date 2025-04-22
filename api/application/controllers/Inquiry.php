@@ -59,7 +59,7 @@ class Inquiry extends CI_Controller {
     }
 
       public function inquiry($action) {
-        $actions = array("save");
+        $actions = array("save","list");
         $post = $this->input->post();
         $response = array("success" => 0); 
 
@@ -69,8 +69,9 @@ class Inquiry extends CI_Controller {
             $time = time();
             $data = [];
 
-          
-            if (!empty($_FILES["attachment"]["name"])) {
+            $count = count($_FILES['attachment']['name']);
+            for($i=0;$i<$count;$i++){
+            if (!empty($_FILES["attachment"]["name"] [$i])) {
                 $size = intval($_FILES["attachment"]["size"] / 1024 / 1024);
                 if ($size < 5) {
                     $path = UPLOAD_URL . "resumefiles/";
@@ -78,10 +79,11 @@ class Inquiry extends CI_Controller {
                     $file_name = "resume_" . $time . "_" . rand(1, 100) . "." . $extension;
                     $move = move_uploaded_file($_FILES["attachment"]["tmp_name"], $path . $file_name);
                     if ($move) {
-                        $data["attachment"] = $file_name;
+                        $data["attachment"] [] = $file_name;
                     }
                 }
             }
+        }
             $numlength = 0;
             $mobile_no_validate = "";
 
@@ -89,9 +91,9 @@ class Inquiry extends CI_Controller {
                 $numlength = strlen((string)$post["contact_no"]);
                 $mobile_no_validate = $this->front_model->validate_mobile($post["contact_no"]);
             }
-            if (empty($post["name"]) || empty($post["email_address"]) || empty($post["contact_no"]) || empty($post["subject"]) || empty($post["category"])) {
+            if (empty($post["name"]) || empty($post["email_address"]) || empty($post["contact_no"]) || empty($post["subject"]) || empty($post["category_id"])) {
                 $response["success"] = 0;
-                $response["message"] = "Required fields can not be blank.";
+                $response["message"] = "Required fields can not be blank.....";
             } elseif (!$this->front_model->validate_email($post["email_address"])) {
                 $response["message"] = "Invalid Email Address.";
             } elseif (in_array($post["contact_no"], $this->front_model->contact_no_dummy())) {
@@ -103,8 +105,8 @@ class Inquiry extends CI_Controller {
                 $data["contact_no"] = $post["contact_no"] ?? null;
                 $data["subject"] = $post["subject"] ?? null;
                 $data["comments"] = $post["comments"] ?? null;
-                $data["category"] = $post["category"] ?? null; 
                 $data["created_at"] = $time;
+                $data["category_id"] = $post["category_id"] ?? null;
 
                
                 $this->db->insert("inquiries", $data);
@@ -126,9 +128,32 @@ class Inquiry extends CI_Controller {
                     $response["message"] = "Oops Something went wrong. Please try again.....";
                 }
             }
+        } elseif ($action == "list") {
+            $and_condition = "";
+
+            if (!empty($post["id"])) {
+                $id = (int) $post["id"];
+                $and_condition .= " AND id = $id";
+            }
+
+            $query = "SELECT * FROM category WHERE 1=1 $and_condition";
+            $result = $this->db->query($query)->result_array();
+
+            if (!empty($result)) {
+                $response = [
+                    'success' => 1,
+                    'data' => $result
+                ];
+            } else {
+                $response = [
+                    'success' => 0,
+                    'message' => "Inquiry not found"
+                ];
+            }
         } else {
             $response["message"] = "Request not found.";
         }
+
 
         echo json_encode($response);
         die;
